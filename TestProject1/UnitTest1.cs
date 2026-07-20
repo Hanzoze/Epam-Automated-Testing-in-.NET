@@ -52,29 +52,12 @@ namespace TestProject1
             return element;
         }
 
-        private void ClickReliably(IWebElement element)
-        {
-            WaitUntilClickable(element);
-            try
-            {
-                element.Click();
-            }
-            catch (ElementClickInterceptedException)
-            {
-                ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].click();", element);
-            }
-            catch (ElementNotInteractableException)
-            {
-                ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].click();", element);
-            }
-        }
-
         private IWebElement OpenGlobalSearch()
         {
             IWebElement toggleButton = wait.Until(d =>
                 d.FindElement(By.XPath("//button[.//span[contains(@class,'is-a11y-only') and text()='Search']]")));
 
-            ClickReliably(toggleButton);
+            toggleButton.Click();
 
             wait.Until(d => toggleButton.GetAttribute("aria-expanded") == "true");
 
@@ -142,7 +125,7 @@ namespace TestProject1
 
             IWebElement comboBoxRemote = driver.FindElement(By.XPath("//span[text()='Remote']/parent::label"));
             ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].scrollIntoView({block: 'center'});", comboBoxRemote);
-            ClickReliably(comboBoxRemote);
+            comboBoxRemote.Click();
 
             IWebElement searchButton = driver.FindElement(By.ClassName("SearchBox_button__3ImF7"));
             searchButton.Click();
