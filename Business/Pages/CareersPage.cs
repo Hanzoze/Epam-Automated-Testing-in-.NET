@@ -1,10 +1,9 @@
-﻿using OpenQA.Selenium;
-using System;
-using System.Linq;
+using OpenQA.Selenium;
+using Core.Logging;
 
-namespace TestingTasks
+namespace Business.Pages
 {
-    public class CareersPage : BasePage
+    public class CareersPage : EpamBasePage
     {
         private readonly By startSearchBtn = By.XPath("//div[@class='pinned-button']//a");
         private readonly By searchField = By.Name("search");
@@ -18,39 +17,40 @@ namespace TestingTasks
 
         public CareersPage ClickStartSearch()
         {
-            var button = wait.Until(d => d.FindElement(startSearchBtn));
-            button.Click();
+            ClickElement(startSearchBtn);
             return this;
         }
 
         public CareersPage EnterKeyword(string keyword)
         {
-            var field = wait.Until(d => d.FindElement(searchField));
+            var field = WaitForElement(searchField);
             field.Clear();
             field.SendKeys(keyword);
+            TafLogger.Info($"Entered keyword: {keyword}");
             return this;
         }
 
         public CareersPage SelectCountry(string country)
         {
-            var field = driver.FindElement(countryField);
+            var field = Driver.FindElement(countryField);
             field.Clear();
             field.SendKeys(country);
+            TafLogger.Info($"Selected country: {country}");
             return this;
         }
 
         public CareersPage SelectRemote()
         {
-            var remote = driver.FindElement(remoteLabel);
-            ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].scrollIntoView({block: 'center'});", remote);
-            wait.Until(d => remote.Displayed && remote.Enabled);
+            var remote = Driver.FindElement(remoteLabel);
+            ScrollIntoView(remote);
+            Wait.Until(d => remote.Displayed && remote.Enabled);
             remote.Click();
             return this;
         }
 
         public CareersPage ClickSearch()
         {
-            var button = driver.FindElement(searchButton);
+            var button = Driver.FindElement(searchButton);
             button.Click();
             AcceptCookiesIfPresent();
             return this;
@@ -61,15 +61,12 @@ namespace TestingTasks
             IWebElement targetCard = null!;
             IWebElement expandButton = null!;
 
-            wait.Until(d =>
+            Wait.Until(d =>
             {
                 try
                 {
                     var cards = d.FindElements(jobCards);
-                    if (cards.Count == 0)
-                    {
-                        return false;
-                    }
+                    if (cards.Count == 0) return false;
 
                     targetCard = cards.Last();
                     expandButton = targetCard.FindElement(jobCardExpandIcon);
@@ -86,7 +83,7 @@ namespace TestingTasks
             });
 
             expandButton.Click();
-            wait.Until(d => targetCard.Text.Contains(keyword, StringComparison.OrdinalIgnoreCase));
+            Wait.Until(d => targetCard.Text.Contains(keyword, StringComparison.OrdinalIgnoreCase));
 
             return targetCard.Text;
         }
