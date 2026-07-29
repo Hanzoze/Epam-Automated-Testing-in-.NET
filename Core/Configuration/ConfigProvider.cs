@@ -2,12 +2,6 @@ using Microsoft.Extensions.Configuration;
 
 namespace Core.Configuration
 {
-    /// <summary>
-    /// Loads TAF configuration once per test run.
-    /// Environment is selected via the TAF_ENV environment variable
-    /// (falls back to "qa"), so the same binaries can run against
-    /// QA / Staging / Prod without a rebuild.
-    /// </summary>
     public static class ConfigProvider
     {
         private static TafSettings? _settings;
