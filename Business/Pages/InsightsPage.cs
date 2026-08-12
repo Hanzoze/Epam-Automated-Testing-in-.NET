@@ -1,8 +1,8 @@
-﻿using OpenQA.Selenium;
+using OpenQA.Selenium;
 
-namespace TestingTasks
+namespace Business.Pages
 {
-    public class InsightsPage : BasePage
+    public class InsightsPage : EpamBasePage
     {
         private readonly By rightArrow = By.ClassName("slider__right-arrow");
         private readonly By activeSlideTitle = By.XPath("//div[contains(@class, 'active')]//p[contains(@class, 'scaling-of-text-wrapper')]");
@@ -15,12 +15,12 @@ namespace TestingTasks
 
         public InsightsPage SwipeCarousel(int times)
         {
-            var arrow = wait.Until(d => d.FindElement(rightArrow));
-            ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].scrollIntoView({block: 'center'});", arrow);
+            var arrow = WaitForElement(rightArrow);
+            ScrollIntoView(arrow);
 
             for (int i = 0; i < times; i++)
             {
-                wait.Until(d => arrow.Displayed && arrow.Enabled);
+                Wait.Until(d => arrow.Displayed && arrow.Enabled);
                 arrow.Click();
                 Thread.Sleep(1000);
             }
@@ -29,15 +29,15 @@ namespace TestingTasks
 
         public string GetActiveSlideTitle()
         {
-            var titleElement = wait.Until(d => d.FindElement(activeSlideTitle));
+            var titleElement = WaitForElement(activeSlideTitle);
             return NormalizeText(titleElement.Text);
         }
 
         public ArticlePage ClickReadMore()
         {
-            var btn = driver.FindElement(activeReadMoreBtn);
+            var btn = Driver.FindElement(activeReadMoreBtn);
             btn.Click();
-            return new ArticlePage(driver);
+            return new ArticlePage(Driver);
         }
     }
 }

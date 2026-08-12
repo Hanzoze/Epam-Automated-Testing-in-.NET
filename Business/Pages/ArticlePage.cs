@@ -1,13 +1,8 @@
-﻿using OpenQA.Selenium;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using OpenQA.Selenium;
 
-namespace TestingTasks
+namespace Business.Pages
 {
-    public class ArticlePage : BasePage
+    public class ArticlePage : EpamBasePage
     {
         private readonly By articleTitle = By.ClassName("ai-background-video__content");
 
@@ -15,7 +10,7 @@ namespace TestingTasks
 
         public string GetArticleTitle()
         {
-            var titleElement = wait.Until(d => d.FindElement(articleTitle));
+            var titleElement = WaitForElement(articleTitle);
             return NormalizeText(titleElement.Text);
         }
     }
