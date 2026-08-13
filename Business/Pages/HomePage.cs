@@ -1,6 +1,8 @@
 using Business.Pages;
 using Core.Logging;
 using OpenQA.Selenium;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Business.Pages
 {
@@ -13,6 +15,7 @@ namespace Business.Pages
         private readonly By careersLink = By.LinkText("Careers");
         private readonly By searchToggleButton = By.XPath("//button[.//span[contains(@class,'is-a11y-only') and text()='Search']]");
         private readonly By globalSearchInput = By.Id("new_form_search");
+        private readonly By servicesLink = By.LinkText("Services");
 
         // CSS by class instead of tag name, to avoid clicking the wrong button.
         private readonly By findButton = By.CssSelector("button.custom-search-button");
@@ -26,6 +29,16 @@ namespace Business.Pages
             Driver.Navigate().GoToUrl(baseUrl);
             AcceptCookiesIfPresent();
             return this;
+        }
+
+        public ServicesPage NavigateToServices()
+        {
+            Driver.Manage().Window.Maximize();
+            var link = WaitForElement(servicesLink);
+            TafLogger.Info("Navigating to Services page.");
+            link.Click();
+            AcceptCookiesIfPresent();
+            return new ServicesPage(Driver);
         }
 
         public InsightsPage NavigateToInsights()
