@@ -37,17 +37,6 @@ namespace Core.Configuration
 
             var settings = new TafSettings();
             configuration.GetSection("TafSettings").Bind(settings);
-
-            string? pipelineBrowser = System.Environment.GetEnvironmentVariable("BROWSER");
-            if (!string.IsNullOrEmpty(pipelineBrowser))
-            {
-                var property = typeof(TafSettings).GetProperty("BrowserType");
-                if (property != null && Enum.TryParse(property.PropertyType, pipelineBrowser, true, out var parsedBrowser))
-                {
-                    property.SetValue(settings, parsedBrowser);
-                }
-            }
-
             return settings;
         }
     }
