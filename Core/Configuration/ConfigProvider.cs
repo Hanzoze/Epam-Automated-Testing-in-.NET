@@ -32,10 +32,22 @@ namespace Core.Configuration
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env}.json", optional: true, reloadOnChange: true)
                 .AddEnvironmentVariables(prefix: "TAF_")
+                .AddEnvironmentVariables()
                 .Build();
 
             var settings = new TafSettings();
             configuration.GetSection("TafSettings").Bind(settings);
+
+            string? pipelineBrowser = System.Environment.GetEnvironmentVariable("BROWSER");
+            if (!string.IsNullOrEmpty(pipelineBrowser))
+            {
+                var property = typeof(TafSettings).GetProperty("BrowserType");
+                if (property != null && Enum.TryParse(property.PropertyType, pipelineBrowser, true, out var parsedBrowser))
+                {
+                    property.SetValue(settings, parsedBrowser);
+                }
+            }
+
             return settings;
         }
     }

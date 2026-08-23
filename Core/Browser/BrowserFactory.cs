@@ -30,6 +30,8 @@ namespace Core.Browser
             var options = new ChromeOptions();
             if (headless) options.AddArgument("--headless=new");
             options.AddArgument("--start-maximized");
+            options.AddArgument("--no-sandbox");
+            options.AddArgument("--disable-dev-shm-usage");
 
             if (!string.IsNullOrWhiteSpace(downloadDirectory))
             {
