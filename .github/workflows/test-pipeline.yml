@@ -45,7 +45,7 @@ jobs:
         id: ui-tests
         env:
           BROWSER_TYPE: ${{ github.event.inputs.browser || 'Chrome' }}
-        run: dotnet test --no-build --verbosity normal --filter TestCategory!=API --logger "trx;LogFileName=ui_results.trx" -e BROWSER=$BROWSER_TYPE
+        run: dotnet test --no-build --verbosity normal --filter TestCategory!=API --logger "trx;LogFileName=ui_results.trx" -e BROWSER=$env:BROWSER_TYPE
 
       - name: Upload Test Results and Screenshots
         if: always()

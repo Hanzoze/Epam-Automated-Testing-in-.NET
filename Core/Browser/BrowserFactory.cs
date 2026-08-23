@@ -31,6 +31,11 @@ namespace Core.Browser
             if (headless) options.AddArgument("--headless=new");
             options.AddArgument("--start-maximized");
 
+            options.AddExcludedArgument("enable-automation");
+            options.AddAdditionalOption("useAutomationExtension", false);
+            options.AddArgument("--disable-blink-features=AutomationControlled");
+            options.AddArgument("--disable-infobars");
+
             if (!string.IsNullOrWhiteSpace(downloadDirectory))
             {
                 options.AddUserProfilePreference("download.default_directory", downloadDirectory);
@@ -45,6 +50,9 @@ namespace Core.Browser
         {
             var options = new FirefoxOptions();
             if (headless) options.AddArgument("-headless");
+
+            options.SetPreference("dom.webdriver.enabled", false);
+            options.SetPreference("useAutomationExtension", false);
 
             if (!string.IsNullOrWhiteSpace(downloadDirectory))
             {
@@ -61,6 +69,10 @@ namespace Core.Browser
         {
             var options = new EdgeOptions();
             if (headless) options.AddArgument("headless");
+
+            options.AddExcludedArgument("enable-automation");
+            options.AddAdditionalOption("useAutomationExtension", false);
+            options.AddArgument("--disable-blink-features=AutomationControlled");
 
             if (!string.IsNullOrWhiteSpace(downloadDirectory))
             {
