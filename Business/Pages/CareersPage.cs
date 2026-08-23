@@ -1,5 +1,6 @@
 using OpenQA.Selenium;
 using Core.Logging;
+using System;
 
 namespace Business.Pages
 {
@@ -17,6 +18,9 @@ namespace Business.Pages
 
         public CareersPage ClickStartSearch()
         {
+            AcceptCookiesIfPresent();
+
+            var btn = WaitForElement(startSearchBtn);
             ClickElement(startSearchBtn);
             return this;
         }
@@ -32,7 +36,7 @@ namespace Business.Pages
 
         public CareersPage SelectCountry(string country)
         {
-            var field = Driver.FindElement(countryField);
+            var field = WaitForElement(countryField);
             field.Clear();
             field.SendKeys(country);
             TafLogger.Info($"Selected country: {country}");
@@ -41,7 +45,7 @@ namespace Business.Pages
 
         public CareersPage SelectRemote()
         {
-            var remote = Driver.FindElement(remoteLabel);
+            var remote = WaitForElement(remoteLabel);
             ScrollIntoView(remote);
             Wait.Until(d => remote.Displayed && remote.Enabled);
             remote.Click();
@@ -50,16 +54,18 @@ namespace Business.Pages
 
         public CareersPage ClickSearch()
         {
-            var button = Driver.FindElement(searchButton);
-            button.Click();
             AcceptCookiesIfPresent();
+
+            var button = WaitForElement(searchButton);
+            ScrollIntoView(button);
+
+            button.Click();
             return this;
         }
 
         public string ExpandLatestJobCardContaining(string keyword)
         {
-            IWebElement targetCard = null!;
-            IWebElement expandButton = null!;
+            string extractedCardText = string.Empty;
 
             Wait.Until(d =>
             {
@@ -68,12 +74,23 @@ namespace Business.Pages
                     var cards = d.FindElements(jobCards);
                     if (cards.Count == 0) return false;
 
-                    targetCard = cards.Last();
-                    expandButton = targetCard.FindElement(jobCardExpandIcon);
-                    return expandButton.Displayed;
+                    var targetCard = cards.Last();
+                    var expandButton = targetCard.FindElement(jobCardExpandIcon);
+
+                    if (!expandButton.Displayed) return false;
+
+                    ScrollIntoView(expandButton);
+                    expandButton.Click();
+
+                    Wait.Until(innerD => targetCard.Text.Contains(keyword, StringComparison.OrdinalIgnoreCase));
+
+                    extractedCardText = targetCard.Text;
+
+                    return true;
                 }
                 catch (StaleElementReferenceException)
                 {
+                    TafLogger.Info("DOM refreshed during interaction. Retrying element fetch...");
                     return false;
                 }
                 catch (NoSuchElementException)
@@ -82,10 +99,7 @@ namespace Business.Pages
                 }
             });
 
-            expandButton.Click();
-            Wait.Until(d => targetCard.Text.Contains(keyword, StringComparison.OrdinalIgnoreCase));
-
-            return targetCard.Text;
+            return extractedCardText;
         }
     }
 }
