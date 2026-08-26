@@ -3,6 +3,7 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Edge;
 using OpenQA.Selenium.Firefox;
+using SeleniumUndetectedChromeDriver;
 
 namespace Core.Browser
 {
@@ -43,7 +44,7 @@ namespace Core.Browser
                 options.AddUserProfilePreference("plugins.always_open_pdf_externally", true);
             }
 
-            return new ChromeDriver(options);
+            return UndetectedChromeDriver.Create(options: options);
         }
 
         private static IWebDriver CreateFirefoxDriver(bool headless, string? downloadDirectory)
