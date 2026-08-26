@@ -3,6 +3,7 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Edge;
 using OpenQA.Selenium.Firefox;
+using SeleniumUndetectedChromeDriver;
 
 namespace Core.Browser
 {
@@ -30,10 +31,6 @@ namespace Core.Browser
             var options = new ChromeOptions();
             if (headless) options.AddArgument("--headless=new");
             options.AddArgument("--start-maximized");
-
-            options.AddExcludedArgument("enable-automation");
-            options.AddAdditionalOption("useAutomationExtension", false);
-            options.AddArgument("--disable-blink-features=AutomationControlled");
             options.AddArgument("--disable-infobars");
 
             if (!string.IsNullOrWhiteSpace(downloadDirectory))
@@ -43,7 +40,7 @@ namespace Core.Browser
                 options.AddUserProfilePreference("plugins.always_open_pdf_externally", true);
             }
 
-            return new ChromeDriver(options);
+            return UndetectedChromeDriver.Create(options: options);
         }
 
         private static IWebDriver CreateFirefoxDriver(bool headless, string? downloadDirectory)
