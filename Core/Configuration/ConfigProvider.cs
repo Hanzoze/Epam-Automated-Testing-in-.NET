@@ -32,6 +32,7 @@ namespace Core.Configuration
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env}.json", optional: true, reloadOnChange: true)
                 .AddEnvironmentVariables(prefix: "TAF_")
+                .AddEnvironmentVariables()
                 .Build();
 
             var settings = new TafSettings();
