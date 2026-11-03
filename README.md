@@ -1,4 +1,4 @@
-# EPAM Automated Testing in .NET — Test Automation Framework
+# EPAM Automated Testing in .NET - Test Automation Framework
 
 A layered **C# / .NET test automation framework** covering both **UI (Selenium WebDriver)** and **REST API (RestSharp)** testing, with **BDD scenarios (Reqnroll/Gherkin)** and a **GitHub Actions CI pipeline**.
 Built as part of the EPAM *Automated Testing in .NET* program; UI tests target the public [epam.com](https://www.epam.com/) website, API tests target [JSONPlaceholder](https://jsonplaceholder.typicode.com).
@@ -9,15 +9,15 @@ Built as part of the EPAM *Automated Testing in .NET* program; UI tests target t
 
 ## Highlights
 
-- **3-layer architecture** — `Core` (reusable infrastructure) → `Business` (Page Objects & models) → `Tests` (test cases only).
-- **Page Object Model** with a fluent API — test methods read like user scenarios.
-- **Cross-browser** — Chrome, Firefox, Edge via a `BrowserFactory`; headless mode supported.
+- **3-layer architecture** - `Core` (reusable infrastructure) → `Business` (Page Objects & models) → `Tests` (test cases only).
+- **Page Object Model** with a fluent API - test methods read like user scenarios.
+- **Cross-browser** - Chrome, Firefox, Edge via a `BrowserFactory`; headless mode supported.
 - **Thread-safe WebDriver** management (`ThreadLocal<IWebDriver>`) ready for parallel execution.
-- **API testing layer** — `ApiClient` wrapper over RestSharp + fluent `RequestBuilder`, typed response models (System.Text.Json).
-- **BDD** — Gherkin feature files with Reqnroll step definitions.
-- **Environment-based configuration** — `appsettings.{env}.json` + environment-variable overrides (`TAF_ENV`, `TAF_*`).
-- **Diagnostics** — NLog logging of every step and request, automatic **screenshot on failure**.
-- **CI/CD** — GitHub Actions: runs on PRs, nightly schedule and manually with browser selection; publishes `.trx` results and screenshots as artifacts.
+- **API testing layer** - `ApiClient` wrapper over RestSharp + fluent `RequestBuilder`, typed response models (System.Text.Json).
+- **BDD** - Gherkin feature files with Reqnroll step definitions.
+- **Environment-based configuration** - `appsettings.{env}.json` + environment-variable overrides (`TAF_ENV`, `TAF_*`).
+- **Diagnostics** - NLog logging of every step and request, automatic **screenshot on failure**.
+- **CI/CD** - GitHub Actions: runs on PRs, nightly schedule and manually with browser selection; publishes `.trx` results and screenshots as artifacts.
 - Explicit waits only (implicit wait disabled), stale-element retry handling, cookie-banner handling.
 
 ## Architecture
@@ -55,7 +55,7 @@ TestProject1.sln
 | Services navigation | UI, BDD | Navigating to a service category opens the correct page with "Related Offerings" |
 | Users API | API | Status codes (200/201/404), headers (`Content-Type`), schema & content (10 unique users), POST creation |
 
-Example — a fluent UI test:
+Example - a fluent UI test:
 
 ```csharp
 string jobCardText = homePage.Open(ConfigProvider.Settings.BaseUrl)
@@ -68,7 +68,7 @@ string jobCardText = homePage.Open(ConfigProvider.Settings.BaseUrl)
                              .ExpandLatestJobCardContaining("Java");
 ```
 
-Example — an API test:
+Example - an API test:
 
 ```csharp
 var request  = new RequestBuilder("/users", Method.Get).Build();
@@ -132,13 +132,3 @@ dotnet test
 - **Triggers:** pull requests to `main`, nightly run (02:00 UTC), manual run with browser choice (Chrome / Firefox / Edge).
 - **Steps:** restore → build → API tests → UI tests (run even if API tests fail) → upload `.trx` reports and failure screenshots as artifacts (kept 7 days).
 
-## What I learned / challenges
-
-- Designing a framework with clear separation of concerns so new pages and tests can be added without touching infrastructure.
-- Making UI tests stable on a real, dynamic production site: explicit waits, `StaleElementReferenceException` retries, cookie banners, JS clicks where needed.
-- Running UI tests in CI against a site with bot protection — tuned browser options and experimented with headless vs headed runs on a self-hosted runner.
-
-## Author
-
-**Illia Danilchenko** — Computer Engineering student at Wrocław University of Science and Technology (PWr)
-GitHub: [@Hanzoze](https://github.com/Hanzoze)
